@@ -1,23 +1,40 @@
+var BulletEntity = me.ObjectEntity.extend({
+
+    init: function (x, y, settings) {
+        this.parent(x, y, settings);
+        this.collidable = true;
+        this.gravity = 0;
+        this.type = 'bullet';
+    },
+
+    update: function () {
+		if (!this.visible){
+			// remove myself if not on the screen anymore
+            me.game.remove(this);
+		}
+
+		this.vel.x = 10;
+
+        this.updateMovement();
+        var res = me.game.collide(this);
+
+        return true;
+    }
+});
+
 var PlayerEntity = me.ObjectEntity.extend({
 
     init: function(x, y, settings) {
-        // call the constructor
         this.parent(x, y, settings);
-
-        // set the walking & jumping speed
         this.setVelocity(3, 15);
-
-        // adjust the bounding box
         this.updateColRect(8, 48, -1, 0);
-
-
-        // set the display to follow our position on both axis
         me.game.viewport.follow(this.pos, me.game.viewport.AXIS.BOTH);
+        this.type = 'mainPlayer';
+        this.lastTick = 0;
 
     },
 
     update: function() {
-
         if (me.input.isKeyPressed('left')) {
             this.doWalk(true);
         } else if (me.input.isKeyPressed('right')) {
@@ -39,7 +56,7 @@ var PlayerEntity = me.ObjectEntity.extend({
 
         if (res) {
             // if we collide with an enemy
-            if (res.obj.type == me.game.ENEMY_OBJECT) {
+            if (res.obj && res.obj.type == me.game.ENEMY_OBJECT) {
                 // check if we jumped on it
                 if ((res.y > 0) && ! this.jumping) {
                     // bounce
@@ -49,6 +66,16 @@ var PlayerEntity = me.ObjectEntity.extend({
                     // let's flicker in case we touched an enemy
                     this.flicker(45);
                 }
+            }
+        }
+
+        //shoot
+        if (me.input.isKeyPressed('shoot')) {
+            if(this.lastTick + 200 < me.timer.getTime()){
+                this.lastTick = me.timer.getTime();
+                var shot = new BulletEntity(this.pos.x + 20, this.pos.y, { image: 'bullet', spritewidth: 12 });
+                me.game.add(shot, this.z);
+                me.game.sort();
             }
         }
 
@@ -128,11 +155,14 @@ var EnemyEntity = me.ObjectEntity.extend({
     // call by the engine when colliding with another object
     // obj parameter corresponds to the other object (typically the player) touching this one
     onCollision: function(res, obj) {
-
-        // res.y >0 means touched by something on the bottom
-        // which mean at top position for this one
         if (this.alive && (res.y > 0) && obj.falling) {
             this.flicker(45);
+        }
+
+        if (obj.type == "bullet") {
+            this.alive = false;
+            this.flipY(true);
+            this.flicker(60);
         }
     },
 
@@ -179,3 +209,4 @@ var ScoreObject = me.HUD_Item.extend({
     }
 
 });
+
