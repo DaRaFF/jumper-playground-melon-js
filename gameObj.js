@@ -74,6 +74,13 @@ var PlayerEntity = me.ObjectEntity.extend({
             if(this.lastTick + 200 < me.timer.getTime()){
                 this.lastTick = me.timer.getTime();
                 var shot = new BulletEntity(this.pos.x + 20, this.pos.y, { image: 'bullet', spritewidth: 12 });
+                socket.emit('message', {
+                    position: {
+                        x: this.pos.x,
+                        y: this.pos.y,
+                        z: this.z
+                    }
+                });
                 me.game.add(shot, this.z);
                 me.game.sort();
             }
@@ -85,6 +92,8 @@ var PlayerEntity = me.ObjectEntity.extend({
             this.parent(this);
             return true;
         }
+
+
         return false;
 
     }
@@ -96,6 +105,7 @@ var CoinEntity = me.CollectableEntity.extend({
     // unless you need to add some extra initialization
     init: function(x, y, settings) {
         // call the parent constructor
+        console.log(settings);
         this.parent(x, y, settings);
     },
 

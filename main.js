@@ -1,3 +1,24 @@
+"use strict";
+
+var socket = io.connect('http://localhost:8081'),
+    messages = [];
+
+socket.on('connect', function () {
+  messages = [];
+  socket.on('ready', function () {
+    console.log('Connected !');
+  });
+});
+
+socket.on('message', function (message) {
+    messages.push(message);
+    var multiPlayer = new CoinEntity(message.position.x, message.position.y, { image: 'spinning_coin_gold', spritewidth: 32 });
+    me.game.add(multiPlayer, message.position.z);
+    me.game.sort();
+});
+
+
+
 var jsApp	=
 {	
 	onload: function()
