@@ -1,7 +1,8 @@
 "use strict";
 
 var socket = io.connect('http://localhost:8081'),
-    messages = [];
+    messages = [],
+    teammate = null;
 
 socket.on('connect', function () {
     messages = [];
@@ -12,9 +13,15 @@ socket.on('connect', function () {
 
 socket.on('message', function (message) {
     messages.push(message);
-    var teammateEntity = new TeammateEntity(message.position.x, message.position.y, { image:'spinning_coin_gold', spritewidth:32 });
-    me.game.add(teammateEntity, message.position.z);
-    me.game.sort();
+    if(!teammate){
+        var teammateEntity = new TeammateEntity(message.position.x, message.position.y, { image:'gripe_run_right', spritewidth:64 });
+        teammate = teammateEntity;
+        me.game.add(teammateEntity, message.position.z);
+        me.game.sort();
+    }
+    teammate.pos.x = message.position.x;
+    teammate.pos.y = message.position.y;
+
 });
 
 

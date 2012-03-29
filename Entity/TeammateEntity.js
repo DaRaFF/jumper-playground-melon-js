@@ -14,8 +14,6 @@ var TeammateEntity = me.ObjectEntity.extend({
     },
 
     update: function() {
-        this.pos.x = 100;
-
         // check and update movement
         this.updateMovement();
 
