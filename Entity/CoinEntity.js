@@ -25,8 +25,6 @@ var CoinEntity = me.CollectableEntity.extend({
     onDestroyEvent: function() {
 	    // increase score
 	    me.game.HUD.updateItemValue("score", 250);
-
-        me.game.viewport.shake(10, 30, me.game.viewport.AXIS.BOTH);
     }
 
 });

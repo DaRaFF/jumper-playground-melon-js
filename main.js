@@ -12,8 +12,8 @@ socket.on('connect', function () {
 
 socket.on('message', function (message) {
     messages.push(message);
-    var multiPlayer = new CoinEntity(message.position.x, message.position.y, { image:'spinning_coin_gold', spritewidth:32 });
-    me.game.add(multiPlayer, message.position.z);
+    var teammateEntity = new TeammateEntity(message.position.x, message.position.y, { image:'spinning_coin_gold', spritewidth:32 });
+    me.game.add(teammateEntity, message.position.z);
     me.game.sort();
 });
 
