@@ -18,11 +18,11 @@ var TeammateEntity = me.ObjectEntity.extend({
         this.updateMovement();
 
         // update animation if necessary
-        if (this.vel.x!=0 || this.vel.y!=0) {
+//        if (this.vel.x!=0 || this.vel.y!=0) {
             // update objet animation
             this.parent(this);
             return true;
-        }
+//        }
         return false;
     }
 });

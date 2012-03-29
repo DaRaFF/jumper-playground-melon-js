@@ -50,13 +50,6 @@ var PlayerEntity = me.ObjectEntity.extend({
             if(this.lastTick + 200 < me.timer.getTime()){
                 this.lastTick = me.timer.getTime();
                 var shot = new BulletEntity(this.pos.x + 20, this.pos.y, { image: 'bullet', spritewidth: 12 });
-                socket.emit('message', {
-                    position: {
-                        x: this.pos.x,
-                        y: this.pos.y,
-                        z: this.z
-                    }
-                });
                 me.game.add(shot, this.z);
                 me.game.sort();
             }
@@ -64,6 +57,19 @@ var PlayerEntity = me.ObjectEntity.extend({
 
         // update animation if necessary
         if (this.vel.x!=0 || this.vel.y!=0) {
+            //push message to your network partners
+            socket.emit('message', {
+                position: {
+                    x: this.pos.x,
+                    y: this.pos.y,
+                    z: this.z,
+                    vel: {
+                        x: this.vel.x,
+                        y: this.vel.y
+                    }
+                }
+            });
+
             // update objet animation
             this.parent(this);
             return true;
